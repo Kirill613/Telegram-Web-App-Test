@@ -1,35 +1,44 @@
-document.addEventListener("DOMContentLoaded", function() {
-    let tg = window.Telegram.WebApp;
+let openBtn = document.querySelector(".openBtn");
+let popup = document.querySelector(".popup");
+let closeBtn = document.querySelector(".closeBtn");
+let textContainer = document.getElementById("popupText");
 
-    let usercard = document.getElementById("usercard");
-
-    let profName = document.createElement('p');
-    profName.innerText = `${tg.initDataUnsafe.user.first_name}
-    ${tg.initDataUnsafe.user.last_name}
-    ${tg.initDataUnsafe.user.username} (${tg.initDataUnsafe.user.language_code})`;
-    
-    usercard.appendChild(profName);
-
-    let userid = document.createElement('p');
-    userid.innerText = `${tg.initDataUnsafe.user.id}`;
-    usercard.appendChild(userid);
+openBtn.addEventListener("click", () => {
+    readFromTelegram();
 
     const phrases = ["Yes", "No"];
-    const checkButton = document.getElementById("checkButton");
-    const messageContainer = document.getElementById("messageContainer");
+    const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+    
+    textContainer.textContent = randomPhrase;
 
-    checkButton.addEventListener("click", function() {
-        const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-        displayMessage(randomPhrase);
-    });
-
-    function displayMessage(phrase) {
-        messageContainer.textContent = phrase;
-        messageContainer.style.opacity = 1;
-        messageContainer.style.transform = "scale(1)";
-        setTimeout(() => {
-            messageContainer.style.opacity = 0;
-            messageContainer.style.transform = "scale(1.5)";
-        }, 2000);
-    }
+    popup.classList.add("active");
 });
+
+closeBtn.addEventListener("click", () => {
+    popup.classList.remove("active");
+});
+
+function readFromTelegram(){
+    try {
+        if (window && window.Telegram && window.Telegram.WebApp){
+            let tg = window.Telegram.WebApp;
+
+            let usercard = document.getElementById("usercard");
+    
+            let profName = document.createElement('p');
+            profName.innerText = `${tg.initDataUnsafe.user.first_name}
+            ${tg.initDataUnsafe.user.last_name}
+            ${tg.initDataUnsafe.user.username} (${tg.initDataUnsafe.user.language_code})`;
+            
+            usercard.appendChild(profName);
+    
+            let userid = document.createElement('p');
+            userid.innerText = `${tg.initDataUnsafe.user.id}`;
+            usercard.appendChild(userid);
+
+            console.log(usercard);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
