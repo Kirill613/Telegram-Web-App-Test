@@ -20,24 +20,15 @@ closeBtn.addEventListener("click", () => {
 
 function readFromTelegram(){
     try {
-        if (window && window.Telegram && window.Telegram.WebApp){
-            let tg = window.Telegram.WebApp;
+        let tg = window.Telegram.WebApp;
 
-            let usercard = document.getElementById("usercard");
-    
-            let profName = document.createElement('p');
-            profName.innerText = `${tg.initDataUnsafe.user.first_name}
+        const userData = `${tg.initDataUnsafe.user.first_name}
             ${tg.initDataUnsafe.user.last_name}
             ${tg.initDataUnsafe.user.username} (${tg.initDataUnsafe.user.language_code})`;
-            
-            usercard.appendChild(profName);
     
-            let userid = document.createElement('p');
-            userid.innerText = `${tg.initDataUnsafe.user.id}`;
-            usercard.appendChild(userid);
-
-            console.log(usercard);
-        }
+        const userId = `${tg.initDataUnsafe.user.id}`;
+        
+        textContainer += userData + userId;
     } catch (error) {
         console.log(error);
     }
