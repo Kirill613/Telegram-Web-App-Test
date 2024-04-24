@@ -3,11 +3,15 @@ let popup = document.querySelector(".popup");
 let closeBtn = document.querySelector(".closeBtn");
 let textContainer = document.getElementById("popupText");
 
+let tg = window.Telegram.WebApp;
+
+tg.expand();
+
 openBtn.addEventListener("click", () => {
-    const phrases = ["Yes", "No"];
+    const phrases = ["Да", "Нет"];
     const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
     
-    textContainer.textContent = randomPhrase + readFromTelegram();
+    textContainer.textContent = `Ты ${readFromTelegram()} чампикс? ${randomPhrase}`;
 
     popup.classList.add("active");
 });
@@ -17,9 +21,7 @@ closeBtn.addEventListener("click", () => {
 });
 
 function readFromTelegram(){
-    let user = window.Telegram.WebApp.initDataUnsafe.user;
+    const user = tg.initDataUnsafe.user;
 
-    const userData = `${user?.first_name} ${user?.last_name} ${user?.username} ${user?.language_code} ${user?.id}`;
-    
-    return ` [${userData}] `;
+    return `${user?.first_name} ${user?.last_name} (${user?.username} ${user?.language_code} ${user?.id})`;
 };
