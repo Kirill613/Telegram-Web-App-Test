@@ -4,12 +4,10 @@ let closeBtn = document.querySelector(".closeBtn");
 let textContainer = document.getElementById("popupText");
 
 openBtn.addEventListener("click", () => {
-    readFromTelegram();
-
     const phrases = ["Yes", "No"];
     const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
     
-    textContainer.textContent = randomPhrase;
+    textContainer.textContent = randomPhrase + readFromTelegram();
 
     popup.classList.add("active");
 });
@@ -19,17 +17,9 @@ closeBtn.addEventListener("click", () => {
 });
 
 function readFromTelegram(){
-    try {
-        let tg = window.Telegram.WebApp;
+    let user = window.Telegram.WebApp.initDataUnsafe.user;
 
-        const userData = `${tg.initDataUnsafe.user.first_name}
-            ${tg.initDataUnsafe.user.last_name}
-            ${tg.initDataUnsafe.user.username} (${tg.initDataUnsafe.user.language_code})`;
+    const userData = `${user?.first_name} ${user?.last_name} ${user?.username} ${user?.language_code} ${user?.id}`;
     
-        const userId = `${tg.initDataUnsafe.user.id}`;
-        
-        textContainer += userData + userId;
-    } catch (error) {
-        console.log(error);
-    }
+    return ` [${userData}] `;
 };
