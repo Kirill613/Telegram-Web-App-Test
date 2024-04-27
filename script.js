@@ -7,19 +7,11 @@ let tg = window.Telegram.WebApp;
 
 tg.expand();
 
-$.get('https://www.cloudflare.com/cdn-cgi/trace', function(data) {
-  data = data.trim().split('\n').reduce(function(obj, pair) {
-    pair = pair.split('=');
-    return obj[pair[0]] = pair[1], obj;
-  }, {});
-  console.log(data);
-});
+openBtn.addEventListener("click", async () => {
+    const ipData = await fetchUserIp();
+    const locData = await getUserLocationFromIP();
 
-openBtn.addEventListener("click", () => {
-    const phrases = ["Да", "Нет"];
-    const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-    
-    textContainer.textContent = `Ты ${readFromTelegram()} чампикс? ${randomPhrase}`;
+    textContainer.textContent = `Ты - ${readFromTelegram()} находишься в ${locData}, деньги кидать на карту 1111 2222 3333 4444, благодарю!`;
 
     popup.classList.add("active");
 });
@@ -31,5 +23,44 @@ closeBtn.addEventListener("click", () => {
 function readFromTelegram(){
     const user = tg.initDataUnsafe.user;
 
-    return `${user?.first_name} ${user?.last_name} (${user?.username} ${user?.language_code} ${user?.id})`;
+    return `${user?.first_name} ${user?.last_name} (${user?.username})`;
 };
+
+
+async function fetchUserIp() {
+    try {
+      const response = await fetch('https://www.cloudflare.com/cdn-cgi/trace');
+      const data = await response.text();
+  
+      const formattedData = data
+        .trim()
+        .split('\n')
+        .reduce((obj, pair) => {
+          const [key, value] = pair.split('=');
+          obj[key] = value;
+          return obj;
+        }, {});
+  
+      return formattedData;
+    } catch (error) {
+      console.error("Error fetching or processing data:", error);
+      return ''; 
+    }
+}
+
+async function getUserLocationFromIP() {
+    try {
+      const response = await fetch('https://ipinfo.io/json');
+      if (response.ok) {
+        const data = await response.json();
+        const { city, region, country } = data;
+        const userLocation = `${city}, ${region}, ${country}`;
+        return userLocation;
+      } else {
+        throw new Error('Failed to fetch user location');
+      }
+    } catch (error) {
+      console.error('Error fetching user location:', error);
+      return null; // or handle the error according to your use case
+    }
+  }
